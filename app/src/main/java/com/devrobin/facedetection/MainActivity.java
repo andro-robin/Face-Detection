@@ -1,11 +1,15 @@
 package com.devrobin.facedetection;
 
 import android.app.ComponentCaller;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -178,5 +182,51 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void showDetectionResult(final String title, StringBuilder builder, boolean success) {
+
+        if (success == true){
+
+            textView.setText(null);
+            textView.setMovementMethod(new ScrollingMovementMethod());
+
+            if (builder.length() != 0){
+
+                textView.append(builder);
+
+                if (title.substring(0, title.indexOf(' ')).equalsIgnoreCase("OCR")){
+                    textView.append("\n Hold the text to Copy it");
+                }
+                else {
+                    textView.append("(Hold the text to Copy it)");
+                }
+
+                textView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+
+                        ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clipData = ClipData.newPlainText(title, builder);
+                        clipboardManager.setPrimaryClip(clipData);
+
+                        return true;
+                    }
+                });
+
+            }
+            else {
+                textView.append(title.substring(0, title.indexOf(' ')) + "Failed to find anything");
+            }
+        }
+        else if (success == false){
+
+            textView.setText(null);
+            textView.setMovementMethod(new ScrollingMovementMethod());
+            textView.append(builder);
+
+        }
+
+
     }
 }
