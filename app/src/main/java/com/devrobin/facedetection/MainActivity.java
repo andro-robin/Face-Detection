@@ -85,15 +85,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data, @NonNull ComponentCaller caller) {
-        super.onActivityResult(requestCode, resultCode, data, caller);
-
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
         Bundle bundle = data.getExtras();
         Bitmap bitmap = (Bitmap) bundle.get("data");
 
         FaceDetectionProcess(bitmap);
         Toast.makeText(this, "Success!!", Toast.LENGTH_SHORT).show();
+
     }
 
     private void FaceDetectionProcess(Bitmap bitmap) {
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 .enableTracking().build();
 
 
-        FaceDetector faceDetector = FaceDetection.getClient();
+        FaceDetector faceDetector = FaceDetection.getClient(highAccuracyOpt);
 
         Task<List<Face>> result = faceDetector.process(inputImage1);
 
@@ -124,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
                 if (faces.size() != 0){
 
                     if (faces.size() == 1){
-                        builder.append(faces.size() + " Face Detected !");
+                        builder.append(faces.size() + " Face Detected ! \n");
                     }
                     else if (faces.size() > 1){
-                        builder.append(faces.size() + " Faces Detected !");
+                        builder.append(faces.size() + " Faces Detected ! \n");
                     }
                 }
 
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                     if (face.getSmilingProbability() > 0){
 
                         float smilingProbability = face.getSmilingProbability();
-                        builder.append("4. Smiling Probability [" + String.format("%.2f", smilingProbability) + "] degs.\n");
+                        builder.append("4. Smiling Probability [" + String.format("%.2f", smilingProbability) + " degs.]\n");
                     }
 
 
@@ -154,13 +154,13 @@ public class MainActivity extends AppCompatActivity {
                     if (face.getLeftEyeOpenProbability() > 0){
 
                         float leftEyeProbability = face.getLeftEyeOpenProbability();
-                        builder.append("5. Left Eye Open Probability [" + String.format("%.2f", leftEyeProbability) + "] degs. \n");
+                        builder.append("5. Left Eye Open Probability [" + String.format("%.2f", leftEyeProbability) + " degs.]\n");
 
                     }
 
                     if (face.getRightEyeOpenProbability() > 0){
                         float rightEyeProbability = face.getRightEyeOpenProbability();
-                        builder.append("6. Right Eye Open Probabilty [" + String.format("%.2f", rightEyeProbability) + "] degs. \n");
+                        builder.append("6. Right Eye Open Probabilty [" + String.format("%.2f", rightEyeProbability) + "  degs. ]\n");
                     }
 
                     builder.append("\n");
